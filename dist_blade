@@ -49,9 +49,9 @@ function make_blade_zip() {
 
     cd $src_dir
 
-    echo "VERSION = r'''$version'''" > blade/version.py
-    zip blade.zip __main__.py blade/*.py
-    rm blade/version.py
+    echo "VERSION = r'''$version'''" > blade/__version.py
+    find blade -type f -name '*.py' ! -name '*_test.py' | zip blade.zip __main__.py -@
+    rm blade/__version.py
     mv ./blade.zip ${dist_file_path}
 
     cd $blade_dir

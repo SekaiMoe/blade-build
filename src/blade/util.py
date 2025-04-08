@@ -22,6 +22,7 @@ import inspect
 import json
 import os
 import re
+import shutil
 import signal
 import string
 import subprocess
@@ -385,7 +386,14 @@ def open_zip_file_for_write(filename, compression_level):
 
 
 def which(cmd):
-    returncode, stdout, _ = run_command("which %s" % cmd, shell=True)
+    """
+    Return the path to an executable which would be run if the given cmd was called.
+    If no cmd would be called, return None.
+    """
+    if _IN_PY3:
+        return shutil.which(cmd)
+    tester = 'where.exe' if os.name == 'nt' else 'which'
+    returncode, stdout, _ = run_command([tester, cmd])
     if returncode != 0:
         return None
     return stdout.strip()
